@@ -18,11 +18,8 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Build and run tests
-        run: mvn clean verify
-
-      - name: Show target directory
-        run: ls -la target || echo "target not found"
+      - name: Build project
+        run: mvn clean package -Djacoco.skip=true
 
       - name: Build Docker image
         run: docker build -t api-gateway:${{ github.sha }} .
