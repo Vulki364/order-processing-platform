@@ -20,3 +20,7 @@ jobs:
 
       - name: Build and run tests
         run: mvn clean test
+
+      - name: Build Docker image
+        run: docker build -t api-gateway:${{ github.sha }} .
+
