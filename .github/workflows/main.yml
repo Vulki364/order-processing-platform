@@ -19,8 +19,10 @@ jobs:
           java-version: 17
 
       - name: Build and run tests
+        working-directory: api-gateway
         run: mvn clean test
 
       - name: Build Docker image
+        working-directory: api-gateway
         run: docker build -t api-gateway:${{ github.sha }} .
 
