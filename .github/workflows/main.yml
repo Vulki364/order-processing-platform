@@ -22,5 +22,15 @@ jobs:
         run: mvn clean package -Djacoco.skip=true
 
       - name: Build Docker image
-        run: docker build -t api-gateway:${{ github.sha }} .
+        run: docker build -t ghcr.io/Vulki364/api-gateway:${{ github.sha }} .
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+           registry: ghcr.io
+           username: ${{ github.actor }}
+           password: ${{ secrets.CR_PAT }}
+
+      - name: Push Docker image
+        run: docker push ghcr.io/Vulki364/api-gateway:${{ github.sha }}
 
