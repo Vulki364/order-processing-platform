@@ -20,9 +20,11 @@ jobs:
 
       - name: Build project
         run: mvn clean package -Djacoco.skip=true
+        working-directory: product-service
 
       - name: Build Docker image
         run: docker build -t ghcr.io/vulki364/product-service:${{ github.sha }} .
+        working-directory: product-service
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v2
@@ -33,3 +35,4 @@ jobs:
 
       - name: Push Docker image
         run: docker push ghcr.io/vulki364/product-service:${{ github.sha }}
+        working-directory: product-service

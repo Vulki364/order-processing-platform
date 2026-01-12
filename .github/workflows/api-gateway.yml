@@ -1,8 +1,8 @@
 name: CI/CD Pipeline for API Gateway
 on:
-  pull_request:
   push:
     branches: [ "master" ]
+  pull_request:
 
 jobs:
   build:
@@ -20,17 +20,19 @@ jobs:
 
       - name: Build project
         run: mvn clean package -Djacoco.skip=true
+        working-directory: api-gateway
 
       - name: Build Docker image
         run: docker build -t ghcr.io/vulki364/api-gateway:${{ github.sha }} .
+        working-directory: api-gateway
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v2
         with:
-           registry: ghcr.io
-           username: ${{ github.actor }}
-           password: ${{ secrets.CR_PAT }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.CR_PAT }}
 
       - name: Push Docker image
         run: docker push ghcr.io/vulki364/api-gateway:${{ github.sha }}
-
+        working-directory: api-gateway
