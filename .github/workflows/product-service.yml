@@ -19,7 +19,7 @@ jobs:
           java-version: 17
 
       - name: Build project
-        run: mvn clean package -Djacoco.skip=true
+        run: mvn clean package -DskipTests
         working-directory: product-service
 
       - name: Build Docker image
