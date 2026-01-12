@@ -1,0 +1,37 @@
+name: CI/CD Pipeline for Auth Service
+
+on:
+  pull_request:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Build auth-service
+        run: mvn clean package -Djacoco.skip=true
+        working-directory: auth-service
+
+      - name: Build Docker image
+        run: docker build -t ghcr.io/vulki364/auth-service:${{ github.sha }} auth-service
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.CR_PAT }}
+
+      - name: Push Docker image
+        run: docker push ghcr.io/vulki364/auth-service:${{ github.sha }}
