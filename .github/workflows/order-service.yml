@@ -27,7 +27,7 @@ jobs:
         working-directory: order-service
 
       - name: Build Docker image
-        run: docker build -t ghcr.io/vulki364/order-service:${{ github.sha }} .
+        run: docker build -t ghcr.io/vulki364/order-processing-platform/order-service:${{ github.sha }} .
         working-directory: order-service
 
       - name: Log in to GitHub Container Registry
@@ -38,5 +38,5 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push Docker image
-        run: docker push ghcr.io/vulki364/order-service:${{ github.sha }}
+        run: docker push ghcr.io/vulki364/order-processing-platform/order-service:${{ github.sha }}
         working-directory: order-service

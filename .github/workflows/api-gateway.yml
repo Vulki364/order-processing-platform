@@ -27,7 +27,7 @@ jobs:
         working-directory: api-gateway
 
       - name: Build Docker image
-        run: docker build -t ghcr.io/vulki364/api-gateway:${{ github.sha }} .
+        run: docker build -t ghcr.io/vulki364/order-processing-platform/api-gateway:${{ github.sha }} .
         working-directory: api-gateway
 
       - name: Log in to GitHub Container Registry
@@ -38,5 +38,5 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push Docker image
-        run: docker push ghcr.io/vulki364/api-gateway:${{ github.sha }}
+        run: docker push ghcr.io/vulki364/order-processing-platform/api-gateway:${{ github.sha }}
         working-directory: api-gateway
