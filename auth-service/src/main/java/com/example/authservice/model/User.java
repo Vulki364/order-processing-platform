@@ -11,7 +11,7 @@ public class User {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String username;
+    private String email;
 
     @Column(nullable = false)
     private String password;
@@ -22,19 +22,19 @@ public class User {
 
     public User() {}
 
-    public User(String username, String password, Role role) {
-        this.username = username;
+    public User(String email, String password, Role role) {
+        this.email = email;
         this.password = password;
         this.role = role;
     }
 
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {

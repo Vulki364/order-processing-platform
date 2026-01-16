@@ -1,6 +1,7 @@
 package com.example.authservice.service;
 
 import com.example.authservice.dto.RegisterRequest;
+import com.example.authservice.model.Role;
 import com.example.authservice.model.User;
 import com.example.authservice.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,25 +21,37 @@ public class AuthService {
         this.userRepository = userRepository;
     }
 
-    public boolean userExists(String username) {
-        return userRepository.findByUsername(username).isPresent();
+    public boolean userExists(String email) {
+        return userRepository.findByEmail(email).isPresent();
     }
 
-    public User register(RegisterRequest request) {
+    public User registerUser(RegisterRequest request) {
 
-        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
-            throw new RuntimeException("Username already exists");
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already exists");
         }
 
-        User user = new User();
-        user.setUsername(request.getUsername());
-        user.setPassword(bCryptPasswordEncoder.encode(request.getPassword()));
-        user.setRole(request.getRole());
+        User user = new User(
+                request.getEmail(),
+                bCryptPasswordEncoder.encode(request.getPassword()),
+                Role.USER
+        );
 
         return userRepository.save(user);
     }
 
-    public Optional<User> findByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public User authenticate(String email, String rawPassword) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Email not found"));
+
+        if (!bCryptPasswordEncoder.matches(rawPassword, user.getPassword())) {
+            throw new RuntimeException("Invalid password");
+        }
+
+        return user;
+    }
+
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 }
