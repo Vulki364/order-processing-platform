@@ -1,5 +1,6 @@
 package com.example.productservice.service;
 
+import com.example.productservice.dto.ProductRequest;
 import com.example.productservice.model.Product;
 import com.example.productservice.repository.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -17,8 +18,14 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public Product createProduct(Product product) {
-        product.setAvailable(true);
+    public Product createProduct(ProductRequest request) {
+        Product product = new Product(
+                request.getName(),
+                request.getDescription(),
+                request.getPrice(),
+                request.getCategory(),
+                request.isAvailable()
+        );
         return productRepository.save(product);
     }
 

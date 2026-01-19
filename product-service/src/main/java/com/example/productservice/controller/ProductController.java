@@ -1,7 +1,9 @@
 package com.example.productservice.controller;
 
+import com.example.productservice.dto.ProductRequest;
 import com.example.productservice.model.Product;
 import com.example.productservice.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -18,8 +20,8 @@ public class ProductController {
     }
 
     @PostMapping
-    public Product createProduct(@RequestBody Product product) {
-        return productService.createProduct(product);
+    public Product createProduct(@RequestBody @Valid ProductRequest request) {
+        return productService.createProduct(request);
     }
 
     @GetMapping
@@ -64,5 +66,7 @@ public class ProductController {
     public List<Product> getAvailableProducts() {
         return productService.getAvailableProducts();
     }
+
+
 
 }
