@@ -1,21 +1,29 @@
 package com.example.productservice.service;
 
 import com.example.productservice.dto.ProductRequest;
+import com.example.productservice.kafka.ProductEventProducer;
 import com.example.productservice.model.Product;
 import com.example.productservice.repository.ProductRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import tools.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
 public class ProductService {
 
+    private static final Logger log = LoggerFactory.getLogger(ProductService.class);
     private final ProductRepository productRepository;
+    private final ProductEventProducer eventProducer;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, ProductEventProducer eventProducer) {
         this.productRepository = productRepository;
+        this.eventProducer = eventProducer;
     }
 
     public Product createProduct(ProductRequest request) {
@@ -26,7 +34,16 @@ public class ProductService {
                 request.getCategory(),
                 request.isAvailable()
         );
-        return productRepository.save(product);
+
+        Product savedProduct = productRepository.save(product);
+
+        try {
+            eventProducer.sendProductCreatedEvent(savedProduct);
+        } catch (Exception e) {
+            log.error("Failed to send product.created event", e);
+        }
+
+        return savedProduct;
     }
 
     public List<Product> getAllProducts() {
